@@ -10,9 +10,10 @@ public class Main {
 			SAXParser saxParser = factory.newSAXParser();
 			SAXHandler userhandler = new SAXHandler();
 			saxParser.parse(inputFile, userhandler);
-			Graph g = userhandler.getGraph();
-			g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "IND", "output.xml");
-			g.calculerItineraireMinimisantPopulationTotale("BEL", "IND", "output2.xml");
+//			Graph g = userhandler.getGraph();
+			userhandler.getGraph();
+//			g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "IND", "output.xml");
+//			g.calculerItineraireMinimisantPopulationTotale("BEL", "IND", "output2.xml");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
