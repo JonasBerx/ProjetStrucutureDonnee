@@ -3,18 +3,22 @@ import java.util.List;
 
 public class Country {
   private final String name;
-  private final List<Country> borders;
-  private final List<String> bordersString;
+  private List<Country> borders;
+  private List<String> bordersString;
   private final int population;
   private final String code;
 
 
   public Country(String code, int population, String name) {
     this.name = name;
-    this.borders = new ArrayList<>();
-    this.bordersString = new ArrayList<>();
+    this.bordersString  = new ArrayList<String>();
+    this.borders = new ArrayList<Country>();
     this.population = population;
     this.code = code;
+  }
+
+  public void setBordersString(List<String> bordersString) {
+    this.bordersString = bordersString;
   }
 
   public String getName() {
@@ -23,6 +27,14 @@ public class Country {
 
   public List<Country> getBorders() {
     return borders;
+  }
+
+  public void setBorders(List<Country> borders) {
+    this.borders = borders;
+  }
+
+  public List<String> getBordersString() {
+    return bordersString;
   }
 
   public int getPopulation() {
@@ -67,6 +79,9 @@ public class Country {
 
   @Override
   public String toString() {
-    return "Country [code=" + code + ", name=" + name + ", population=" + population + ", borders" + borders + "]";
+    return "Country [code=" + code + ", name=" + name + ", population=" + population + ", bordersString= " + bordersString + " borders={"  +  borders + "}]";
+//    return "Country [code=" + code + ", name=" + name + ", population=" + population + ", bordersString= " + bordersString + "]";
+
+
   }
 }

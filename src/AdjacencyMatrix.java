@@ -1,7 +1,4 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AdjacencyMatrix extends Graph{
   private Map<Integer, Country> intCountry;
@@ -9,7 +6,8 @@ public class AdjacencyMatrix extends Graph{
   private int nbCountry = 0;
   private Travel[][] matrix = new Travel[0][0];
 
-  public AdjacencyMatrix() {
+  public AdjacencyMatrix(Map<String,Country> countries) {
+    super(countries);
     countryInt = new HashMap<Country, Integer>();
     intCountry = new HashMap<Integer, Country>();
   }
@@ -37,7 +35,6 @@ public class AdjacencyMatrix extends Graph{
       matrix = matrixTemp;
     }
 
-    //Si l'a�roport n'est encore pr�sent dans aucune map
     if(!intCountry.containsValue(c) && !countryInt.containsKey(c)) {
       intCountry.put(nbCountry, c);
       countryInt.put(c, nbCountry);
@@ -47,19 +44,22 @@ public class AdjacencyMatrix extends Graph{
 
   @Override
   protected void ajouterArc(Travel t) {
-
+    Country departure = t.getDeparture();
+    List<Country> x = new ArrayList<>();
+    departure.setBorders(x);
+    Country destination = t.getDestination();
+    destination.setBorders(x);
+    int departureInt = countryInt.get(departure);
+    int destinationInt = countryInt.get(destination);
+    matrix[departureInt][destinationInt] = t;
   }
 
   @Override
   public Set<Travel> arcsSortants(Country c) {
     Set<Travel> going = new HashSet<>();
-    //On r�cup�re l'indice de la source
     int departureInt = countryInt.get(c);
-    //On parcourt la ligne des vols
     for(int i=0; i<matrix.length; i++) {
-      //On r�cup�re le vol
       Travel t = matrix[departureInt][i];
-      //Si le vol est pas null on l'ajoute au set
       if(t != null)
         going.add(t);
     }
@@ -68,6 +68,11 @@ public class AdjacencyMatrix extends Graph{
 
   @Override
   public boolean sontAdjacents(Country c1, Country c2) {
-    return false;
+    int indiceA1 = countryInt.get(c1);
+    int indiceA2 = countryInt.get(c2);
+    if(matrix[indiceA1][indiceA2] != null && matrix[indiceA2][indiceA1] != null)
+      return true;
+    else
+      return false;
   }
 }

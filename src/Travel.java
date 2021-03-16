@@ -18,8 +18,8 @@ public class Travel {
   @Override
   public String toString() {
     return "Travel{" +
-            "departure=" + departure +
-            ", destination=" + destination +
+            "departure=" + departure.toString() +
+            ", destination=" + destination.toString() +
             '}';
   }
 }
