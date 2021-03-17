@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Arrays;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -15,10 +16,16 @@ public class Main {
 			System.out.println("-------------------");
 			System.out.println("-------------------");
 			Graph g = userhandler.getGraph();
+//			System.out.println(g.getMatrixInt());
 //			System.out.println(g.countries.get("BEL"));
-			System.out.println(g.sontAdjacents(g.countries.get("FRA"), g.countries.get("BEL")));
-			g.arcsSortants(g.countries.get("BEL")).forEach(System.out::println);
-//			g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "IND", "output.xml");
+
+			g.setMatrixInt();
+//			System.out.println(g.estMatriceNormal());
+//			System.out.println(g.setMatrixInt());
+//			g.arcsSortants(g.countries.get("BEL")).forEach(System.out::println);
+////			System.out.println(g.arcsSortants(g.countries.get("BRN")));
+//			System.out.println(g.sontAdjacents(g.countries.get("MYT"), g.countries.get("BRN")));
+			System.out.println(g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "FRA"));
 //			g.calculerItineraireMinimisantPopulationTotale("BEL", "IND", "output2.xml");
 		} catch (Exception e) {
 			e.printStackTrace();
