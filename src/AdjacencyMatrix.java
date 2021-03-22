@@ -1,4 +1,10 @@
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class AdjacencyMatrix extends Graph {
   private Map<Integer, Country> intCountry;
@@ -6,6 +12,8 @@ public class AdjacencyMatrix extends Graph {
   private int nbCountry = 0;
   private Travel[][] matrix = new Travel[0][0];
   private int[][] matrixInt;
+  private boolean[][] verbindingsMatrix;
+  public static final int infty = Integer.MAX_VALUE;
 
   public AdjacencyMatrix(Map<String, Country> countries) {
     super(countries);
@@ -13,87 +21,121 @@ public class AdjacencyMatrix extends Graph {
     intCountry = new HashMap<Integer, Country>();
   }
 
+  @Override
+  public void init(){
+    if (!isGeldigeVerbindingsMatrix(matrixInt))
+      throw new IllegalArgumentException("No valid nabijheidsmatrix");
+
+    this.verbindingsMatrix = new boolean[matrixInt.length][matrixInt.length];
+    for (int i = 0; i < matrixInt.length; i++)
+      for (int j = 0; j < matrixInt.length; j++)
+        this.verbindingsMatrix[i][j] = matrixInt[i][j] == 1;
+  }
+
+  public boolean isGeldigeVerbindingsMatrix(int[][] matrix) {
+    if (matrix == null || matrix.length != matrix[0].length)
+      return false;
+
+    for (int i = 0; i < matrix.length; i++)
+      if (matrix[i][i] != 0)
+        return false;
+
+    for (int i = 0; i < matrix.length; i++)
+      for (int j = 0; j < matrix.length; j++) {
+        if (matrix[i][j] != 0 && matrix[i][j] != 1) {
+          return false;
+        }
+      }
+    return true;
+  }
+
   private int getNodes() {
     return matrix.length;
   }
 
-//  @Override
-//  public List<String> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind){
-//    Country x = countries.get(bel);
-//    Country y= countries.get(ind);
-//    int start = countryInt.get(x);
-//    int destination = countryInt.get(y);
-//    List<Integer> list = new ArrayList<>();
-//    List<String> listc = new ArrayList<>();
-//    boolean visited[] = new boolean[matrix.length];
-//    Arrays.fill(visited, false);
-//    while(!x.getBordersString().contains(ind) && !visited[start]) {
-//      visited[start] = true;
-//      for(int a = 0; a < x.getBordersString().size(); a ++){
-//        if(!visited[countryInt.get(countries.get(x.getBordersString().get(a)))]) {
-//          listc.add(x.getCode());
-//          if(listc.contains(ind)) {
-//            return listc;
-//          }
-//          x = countries.get(x.getBordersString().get(a));
-//          start = countryInt.get(x);
-//        }
-//      }
-//
-//
-//    }
-//    return listc;
-//  }
-
   @Override
-  public List<String> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind){
+  public List<Integer> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind){
+
     Country x = countries.get(bel);
     Country y= countries.get(ind);
     int start = countryInt.get(x);
     int destination = countryInt.get(y);
-    List<Integer> list = new ArrayList<>();
+    List<Integer> pad = new ArrayList<>();
     List<String> listc = new ArrayList<>();
-    System.out.println(nbCountry);
-    int fromCountryIndex = countryInt.get(countries.get(bel));
-    System.out.println(fromCountryIndex);
-    int toCountryIndex = countryInt.get(countries.get(ind));
-    System.out.println(toCountryIndex);
-    while(!sontAdjacents(x, y)) {
-      // iets doen om X te vervangen door een volgende
+    if (start <= 0 || start > this.getAantalKnopen() || destination <= 0 ||
+            destination > this.getAantalKnopen())
+      throw new IllegalArgumentException();
+    int[] ancestors = this.findAncestors(start, destination);
+    List<Integer> path = new LinkedList<>();
+    int ouder = ancestors[destination - 1];
+    while (ouder != 0 && ouder != infty) {
+      path.add(0, destination);;
+      destination = ouder;
+      ouder = ancestors[destination - 1];
+    }
+    if (ouder == 0) {
+      path.add(0,destination);
     }
 
+    return path;
+  }
 
-    int vertices = matrix.length;
-    int[] dist = new int[vertices];
-    boolean[] visited = new boolean[vertices];
+  private int getAantalKnopen() {
+    return this.matrixInt.length;
+  }
 
-    Arrays.fill(dist, Integer.MAX_VALUE);
-    Arrays.fill(visited, false);
+  private boolean rechtstreekseVerbinding(int van, int tot) {
+//    System.out.println("verbinding van "+van+" tot "+tot+"?");
+    return verbindingsMatrix[van - 1][tot - 1];
+  }
 
-    dist[fromCountryIndex] = 0;
-    for (int i = 0; i < vertices - 1; i++) {
-      int p = getMinIndex(dist, visited);
+  private void initArray(int[] array, int value) {
+    for (int i = 0; i < array.length; i++)
+      array[i] = value;
 
-      visited[p] = true;
-      for (int j = 0; j < vertices; j++) {
-        if (!visited[j] && matrix[p][j] != null && dist[p] != Integer.MAX_VALUE && dist[p] + matrixInt[p][j] < dist[j]) {
-          dist[j] = dist[p] + matrixInt[p][j];
+    System.out.println(Arrays.toString(array));
+  }
+
+  private int[] findAncestors(int start, int destination) {
+    int aantalKnopen = this.getAantalKnopen();
+    int[] ancestors = new int[aantalKnopen];
+    Queue<Integer> queue = new LinkedList<>();
+    queue.add(start);
+    ancestors[start - 1] = 0;
+    int huidig = queue.remove();
+    while (huidig != destination) {
+      for (int i = 1; i <= aantalKnopen; i++) {
+        if (rechtstreekseVerbinding(huidig, i) && ancestors[i - 1] == infty) {
+          //voeg knoop i toe aan queue
+          queue.add(i);
+          //duid aan dat huidig de ouder is van i in ancestormatrix
+          ancestors[i - 1] = huidig;
         }
       }
+      //voorste element van queue wordt nieuwe huidige knoop
+      if (!queue.isEmpty()) {
+        huidig = queue.remove(); //of .poll() wat geen exception gooit
+      } else {
+        //queue is leeg, stop maar
+        break;
+      }
     }
-    System.out.println(Arrays.toString(dist));
-//    return dist;
-
-
-
-
-
-    return listc;
+    return ancestors;
   }
 
   @Override
   public void calculerItineraireMinimisantPopulationTotale(String bel, String ind) {
 
+  }
+
+  @Override
+  public String geefAncestors(int start, int destination) {
+    String res = "Ancestors van "+start+" naar "+destination+":\n";
+    int[] ancestors = this.findAncestors(start, destination);
+    for (int a=0; a<ancestors.length; a++)
+      res += ancestors[a]!=infty?ancestors[a]:"infty"+" ";
+
+    return res;
   }
 
   public int getMinIndex(int[] dist, boolean[] visited) {
@@ -157,7 +199,6 @@ public class AdjacencyMatrix extends Graph {
         going.add(t);
     }
 
-    System.out.println(going);
     return going;
   }
 
@@ -169,35 +210,6 @@ public class AdjacencyMatrix extends Graph {
       return true;
     else
       return false;
-  }
-
-  public int[][] setMatrixInt() {
-    matrixInt = new int[matrix.length][matrix.length];
-    for (int i0 = 0; i0 < matrix.length; i0++) {
-      if (matrix[i0] == null) {
-        matrixInt[i0] = null;
-      } else {
-        for (int i1 = 0; i1 < matrix[i0].length; i1++) {
-          if (matrix[i0][i1] == null || matrix[i0][i1].getDestination() == null || matrix[i0][i1].getDeparture() == null) {
-            matrixInt[i0][i1] = 0;
-          } else {
-            matrixInt[i0][i1] = 1;
-          }
-        }
-      }
-    }
-//    for (int i = 0; i < matrixInt.length; i++) {
-//      for (int j = 0; j < matrixInt.length; j++) {
-//        if(matrixInt[i][j] == 1){
-//          System.out.print(intCountry.get(i).getCode() + " ");
-//        }
-//        else{
-//          System.out.print(matrixInt[i][j] + " ");
-//        }
-//      }
-//      System.out.println();
-//    }
-    return matrixInt;
   }
 
   @Override

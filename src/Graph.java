@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,9 +10,11 @@ public abstract class Graph {
   public Graph(Map<String,Country> countries) {
     this.countries = countries;
   }
-  public abstract List<String> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind) throws Exception;
+  public abstract List<Integer> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind) throws Exception;
 
   public abstract void calculerItineraireMinimisantPopulationTotale(String bel, String ind);
+
+  public abstract String geefAncestors(int start, int destination);
 
   protected abstract void ajouterSommet(Country c);
 
@@ -24,6 +27,6 @@ public abstract class Graph {
   public abstract boolean estMatrice();
   public abstract boolean estMatriceNormal();
 
-  public abstract int[][] setMatrixInt();
+  public abstract void init();
 
 }
