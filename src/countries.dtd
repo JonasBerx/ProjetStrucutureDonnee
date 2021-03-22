@@ -8,6 +8,7 @@
 <!ATTLIST country latlng CDATA #REQUIRED>
 <!ATTLIST country name CDATA #REQUIRED>
 <!ATTLIST country population CDATA #REQUIRED>
+<!--Region should be locked to only a few region, EUW, NA, ... How to implement?-->
 <!ATTLIST country region CDATA #REQUIRED>
 <!ATTLIST country subregion CDATA #IMPLIED>
 

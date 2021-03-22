@@ -13,6 +13,10 @@ public class AdjacencyMatrix extends Graph {
     intCountry = new HashMap<Integer, Country>();
   }
 
+  private int getNodes() {
+    return matrix.length;
+  }
+
 //  @Override
 //  public List<String> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind){
 //    Country x = countries.get(bel);
@@ -49,10 +53,41 @@ public class AdjacencyMatrix extends Graph {
     int destination = countryInt.get(y);
     List<Integer> list = new ArrayList<>();
     List<String> listc = new ArrayList<>();
-
+    System.out.println(nbCountry);
+    int fromCountryIndex = countryInt.get(countries.get(bel));
+    System.out.println(fromCountryIndex);
+    int toCountryIndex = countryInt.get(countries.get(ind));
+    System.out.println(toCountryIndex);
     while(!sontAdjacents(x, y)) {
       // iets doen om X te vervangen door een volgende
     }
+
+
+    int vertices = matrix.length;
+    int[] dist = new int[vertices];
+    boolean[] visited = new boolean[vertices];
+
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    Arrays.fill(visited, false);
+
+    dist[fromCountryIndex] = 0;
+    for (int i = 0; i < vertices - 1; i++) {
+      int p = getMinIndex(dist, visited);
+
+      visited[p] = true;
+      for (int j = 0; j < vertices; j++) {
+        if (!visited[j] && matrix[p][j] != null && dist[p] != Integer.MAX_VALUE && dist[p] + matrixInt[p][j] < dist[j]) {
+          dist[j] = dist[p] + matrixInt[p][j];
+        }
+      }
+    }
+    System.out.println(Arrays.toString(dist));
+//    return dist;
+
+
+
+
+
     return listc;
   }
 
@@ -61,18 +96,35 @@ public class AdjacencyMatrix extends Graph {
 
   }
 
+  public int getMinIndex(int[] dist, boolean[] visited) {
+    int vertices = dist.length;
+    int minDist = Integer.MAX_VALUE;
+    int minIndex = -1;
+
+    for (int i = 0; i < vertices; i++) {
+      if (!visited[i] && dist[i] <= minDist) {
+        minDist = dist[i];
+        minIndex = i;
+      }
+    }
+    return minIndex;
+  }
+
 
 
   @Override
   protected void ajouterSommet(Country c) {
     if (nbCountry >= matrix.length) {
       Travel[][] matrixTemp = new Travel[nbCountry + 1][nbCountry + 1];
+      int[][] intMatrixTemp = new int[nbCountry+1][nbCountry+1];
       for (int i = 0; i < matrix.length; i++) {
         for (int j = 0; j < matrix.length; j++) {
           matrixTemp[i][j] = matrix[i][j];
+          intMatrixTemp[i][j] = matrixInt[i][j];
         }
       }
       matrix = matrixTemp;
+      matrixInt = intMatrixTemp;
     }
 
     if (!intCountry.containsValue(c) && !countryInt.containsKey(c)) {
@@ -92,6 +144,7 @@ public class AdjacencyMatrix extends Graph {
     int departureInt = countryInt.get(departure);
     int destinationInt = countryInt.get(destination);
     matrix[departureInt][destinationInt] = t;
+    matrixInt[departureInt][destinationInt] = 1;
   }
 
   @Override

@@ -39,7 +39,7 @@ public class SAXHandler extends DefaultHandler {
   }
 
   //Set this to true if you want to print
-  boolean print = false;
+  boolean print = true;
 
   public String getName() {
     return name;

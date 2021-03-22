@@ -7,18 +7,17 @@ import javax.xml.parsers.SAXParserFactory;
 public class Main {
 	public static void main(String[] args) {
 		try {
-			File inputFile = new File("countries.xml");
+			File inputFile = new File("src/countries.xml");
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser saxParser = factory.newSAXParser();
 			SAXHandler userhandler = new SAXHandler();
-			System.out.println(userhandler.getCountries().get("FRA"));
+//			System.out.println(userhandler.getCountries().get("FRA"));
 			saxParser.parse(inputFile, userhandler);
 			System.out.println("-------------------");
 			System.out.println("-------------------");
 			Graph g = userhandler.getGraph();
 //			System.out.println(g.getMatrixInt());
-//			System.out.println(g.countries.get("BEL"));
-
+			System.out.println(g.countries.get("BEL"));
 			g.setMatrixInt();
 //			System.out.println(g.estMatriceNormal());
 //			System.out.println(g.setMatrixInt());
