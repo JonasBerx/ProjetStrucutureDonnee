@@ -17,15 +17,14 @@ public class Main {
 			System.out.println("-------------------");
 			Graph g = userhandler.getGraph();
 //			System.out.println(g.getMatrixInt());
-			System.out.println(g.countries.get("BEL"));
 			g.setMatrixInt();
 //			System.out.println(g.estMatriceNormal());
 //			System.out.println(g.setMatrixInt());
-//			g.arcsSortants(g.countries.get("BEL")).forEach(System.out::println);
+			g.arcsSortants(g.countries.get("BEL"));
 ////			System.out.println(g.arcsSortants(g.countries.get("BRN")));
 //			System.out.println(g.sontAdjacents(g.countries.get("MYT"), g.countries.get("BRN")));
-			System.out.println(g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "FRA"));
-//			g.calculerItineraireMinimisantPopulationTotale("BEL", "IND", "output2.xml");
+			System.out.println(g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "IND"));
+//			g.calculerItineraireMinimisantPopulationTotale("BEL", "IND");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

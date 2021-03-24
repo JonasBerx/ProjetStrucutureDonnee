@@ -1,15 +1,9 @@
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+package ver2;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +26,7 @@ public class SAXHandler extends DefaultHandler {
   int population;
   List<String> borders;
 //  AdjacencyMatrix am;
-  AdjMatrix am;
+  Matrix am;
 
   public SAXHandler() {
     super();
@@ -64,9 +58,6 @@ public class SAXHandler extends DefaultHandler {
       cca3 = attributes.getValue("cca3");
       population = Integer.parseInt(attributes.getValue("population"));
       borders = new ArrayList<String>();
-//      System.out.println("CCA3 : " + cca3);
-//      System.out.println("Name : " + name);
-//      System.out.println("Population : " + population);
     }
 
     if (qName.equalsIgnoreCase("border")) {
@@ -79,20 +70,14 @@ public class SAXHandler extends DefaultHandler {
   @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
     if (bfname) {
-//      System.out.println("Name : " + name);
       bfname = false;
     }
-
     if (bfcode) {
-//      System.out.println("CCA3 : " + cca3);
       bfcode = false;
     }
-
     if (bfpopulation) {
-//      System.out.println("Population : " + population);
       bfpopulation = false;
     }
-
     if (bfborders) {
       String border = new String(ch, start, length);
       borders.add(border);
@@ -108,16 +93,13 @@ public class SAXHandler extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if (qName.equalsIgnoreCase("country")) {
       Country country = new Country(cca3, population, name);
-//      System.out.println("Setting borders: " + borders);
       country.setBordersString(borders);
-//      System.out.println(country.toString());
       countries.put(cca3, country);
-//      System.out.println("Borders : " + borders);
     }
-    if (!qName.equalsIgnoreCase("border")) {
+//    if (!qName.equalsIgnoreCase("border")) {
 //      System.out.println("End element: " + qName);
 //      System.out.println("-------------------");
-    }
+//    }
     if (qName.equalsIgnoreCase("countries")) {
       Map<String, Country> tempMap = new HashMap<>();
       for (Country country : countries.values()) {
@@ -135,21 +117,21 @@ public class SAXHandler extends DefaultHandler {
     }
   }
 
-    public AdjMatrix getGraph () {
+    public Matrix getGraph () {
 
-      am = new AdjMatrix(countries);
+      am = new Matrix(countries);
       for (Country country : countries.values()) {
-        am.ajouterSommet(country);
+        am.addNode(country);
       }
       for(Country country : countries.values()) {
         if(country.getBorders().size() == 1) {
           Travel t = new Travel(country, countries.get(country.getBordersString().get(0)));
-          am.ajouterArc(t);
+          am.addArc(t);
         }
         else if(country.getBorders().size() != 0){
           for (Country country2 : country.getBorders()) {
             Travel t = new Travel(country, country2);
-            am.ajouterArc(t);
+            am.addArc(t);
           }
         }
       }

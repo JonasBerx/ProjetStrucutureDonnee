@@ -6,6 +6,8 @@ public class AdjacencyMatrix extends Graph {
   private int nbCountry = 0;
   private Travel[][] matrix = new Travel[0][0];
   private int[][] matrixInt;
+  private int[][] matrixPop;
+
 
   public AdjacencyMatrix(Map<String, Country> countries) {
     super(countries);
@@ -17,36 +19,8 @@ public class AdjacencyMatrix extends Graph {
     return matrix.length;
   }
 
-//  @Override
-//  public List<String> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind){
-//    Country x = countries.get(bel);
-//    Country y= countries.get(ind);
-//    int start = countryInt.get(x);
-//    int destination = countryInt.get(y);
-//    List<Integer> list = new ArrayList<>();
-//    List<String> listc = new ArrayList<>();
-//    boolean visited[] = new boolean[matrix.length];
-//    Arrays.fill(visited, false);
-//    while(!x.getBordersString().contains(ind) && !visited[start]) {
-//      visited[start] = true;
-//      for(int a = 0; a < x.getBordersString().size(); a ++){
-//        if(!visited[countryInt.get(countries.get(x.getBordersString().get(a)))]) {
-//          listc.add(x.getCode());
-//          if(listc.contains(ind)) {
-//            return listc;
-//          }
-//          x = countries.get(x.getBordersString().get(a));
-//          start = countryInt.get(x);
-//        }
-//      }
-//
-//
-//    }
-//    return listc;
-//  }
-
   @Override
-  public List<String> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind){
+  public List<Integer> calculerItineraireMinimisantNombreDeFrontieres( String bel, String ind){
     Country x = countries.get(bel);
     Country y= countries.get(ind);
     int start = countryInt.get(x);
@@ -58,37 +32,10 @@ public class AdjacencyMatrix extends Graph {
     System.out.println(fromCountryIndex);
     int toCountryIndex = countryInt.get(countries.get(ind));
     System.out.println(toCountryIndex);
-    while(!sontAdjacents(x, y)) {
-      // iets doen om X te vervangen door een volgende
-    }
-
-
-    int vertices = matrix.length;
-    int[] dist = new int[vertices];
-    boolean[] visited = new boolean[vertices];
-
-    Arrays.fill(dist, Integer.MAX_VALUE);
-    Arrays.fill(visited, false);
-
-    dist[fromCountryIndex] = 0;
-    for (int i = 0; i < vertices - 1; i++) {
-      int p = getMinIndex(dist, visited);
-
-      visited[p] = true;
-      for (int j = 0; j < vertices; j++) {
-        if (!visited[j] && matrix[p][j] != null && dist[p] != Integer.MAX_VALUE && dist[p] + matrixInt[p][j] < dist[j]) {
-          dist[j] = dist[p] + matrixInt[p][j];
-        }
-      }
-    }
-    System.out.println(Arrays.toString(dist));
-//    return dist;
 
 
 
-
-
-    return listc;
+    return null;
   }
 
   @Override
@@ -117,14 +64,17 @@ public class AdjacencyMatrix extends Graph {
     if (nbCountry >= matrix.length) {
       Travel[][] matrixTemp = new Travel[nbCountry + 1][nbCountry + 1];
       int[][] intMatrixTemp = new int[nbCountry+1][nbCountry+1];
+      int[][] popMatrixTemp = new int[nbCountry][nbCountry];
       for (int i = 0; i < matrix.length; i++) {
         for (int j = 0; j < matrix.length; j++) {
           matrixTemp[i][j] = matrix[i][j];
           intMatrixTemp[i][j] = matrixInt[i][j];
+          popMatrixTemp[i][j] = 0;
         }
       }
       matrix = matrixTemp;
       matrixInt = intMatrixTemp;
+      matrixPop = popMatrixTemp;
     }
 
     if (!intCountry.containsValue(c) && !countryInt.containsKey(c)) {
@@ -145,21 +95,27 @@ public class AdjacencyMatrix extends Graph {
     int destinationInt = countryInt.get(destination);
     matrix[departureInt][destinationInt] = t;
     matrixInt[departureInt][destinationInt] = 1;
+    matrixInt[departureInt][destinationInt] = t.getDestination().getPopulation();
   }
 
   @Override
   public Set<Travel> arcsSortants(Country c) {
-    Set<Travel> going = new HashSet<>();
-    int departureInt = countryInt.get(c);
-    for (int i = 0; i < matrix.length; i++) {
-      Travel t = matrix[departureInt][i];
-      if (t != null)
-        going.add(t);
-    }
-
-    System.out.println(going);
-    return going;
+    return null;
   }
+
+//  @Override
+//  public Set<Travel> arcsSortants(Country c) {
+//    Set<Travel> going = new HashSet<>();
+//    int departureInt = countryInt.get(c);
+//    for (int i = 0; i < matrix.length; i++) {
+//      Travel t = matrix[departureInt][i];
+//      if (t != null)
+//        going.add(t);
+//    }
+//
+//    System.out.println(going);
+//    return going;
+//  }
 
   @Override
   public boolean sontAdjacents(Country c1, Country c2) {

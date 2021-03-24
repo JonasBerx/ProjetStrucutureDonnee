@@ -9,7 +9,7 @@ public abstract class Graph {
   public Graph(Map<String,Country> countries) {
     this.countries = countries;
   }
-  public abstract List<String> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind) throws Exception;
+  public abstract List<Integer> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind) throws Exception;
 
   public abstract void calculerItineraireMinimisantPopulationTotale(String bel, String ind);
 
