@@ -206,32 +206,6 @@ public class Matrix extends Graph {
     int destinationInt = countryIntegerMap.get(destinationCountry);
 
     initWeightedPopMatrix(populationMatrix);
-//    int vertices = nbCountry;
-//
-//    long[] dist = new long[vertices];
-//    boolean[] visited = new boolean[vertices];
-//
-//    Arrays.fill(dist, Integer.MAX_VALUE);
-//    Arrays.fill(visited, false);
-//
-//    dist[sourceInt] = countries.get(source).getPopulation();
-//
-//    for (int i = 0; i < vertices - 1; i++) {
-//      int p = getMinIndex(dist, visited);
-//      visited[p] = true;
-//
-//      for (int j = 0; j < vertices; j++) {
-//        if (!visited[j] && populationMatrix[p][j] != 0 && dist[p] != Integer.MAX_VALUE && dist[p] + populationMatrix[p][j] < dist[j]) {
-//          dist[j] = dist[p] + populationMatrix[p][j];
-//        }
-//      }
-//    }
-//
-//    cleanUpList(dist);
-//    System.out.println(Arrays.toString(dist));
-
-    System.out.println("---- Minimisant Population End ----\n");
-
     int nVertices = nbCountry;
 
     // shortestDistances[i] will hold the
@@ -287,7 +261,6 @@ public class Matrix extends Graph {
         {
           nearestVertex = vertexIndex;
           shortestDistance = shortestDistances[vertexIndex];
-          System.out.println(nearestVertex);
         }
       }
 
@@ -330,6 +303,7 @@ public class Matrix extends Graph {
       Collections.reverse(indices);
       writeToXml(outname,collectCountries(indices));
     }
+    System.out.println("---- Minimisant Population End ----\n");
 
   }
 
