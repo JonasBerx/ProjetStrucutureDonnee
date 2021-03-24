@@ -39,6 +39,11 @@ public class Matrix extends Graph {
 
   private long[][] weightedAdjecencyMatrix;
 
+  private List<Integer> indices = new ArrayList<>();
+
+  private static final long NO_PARENT = -1;
+
+
   // Value used for parent matrix for BFS for values that havent been visited yet -> used during initialisation of array.
   public static final int infty = Integer.MAX_VALUE;
 
@@ -103,6 +108,7 @@ public class Matrix extends Graph {
       System.out.println("---- Minimisant Frontieres End ----\n");
     } catch (Exception e) {
       System.out.println(e.getMessage());
+      throw new Exception(e.getMessage());
     }
 
   }
@@ -139,7 +145,6 @@ public class Matrix extends Graph {
         tr.setOutputProperty(OutputKeys.METHOD, "xml");
         tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         tr.setOutputProperty(OutputKeys.STANDALONE, "yes");
-//        tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "roles.dtd");
         tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
         // send DOM to file
@@ -196,38 +201,159 @@ public class Matrix extends Graph {
     // Retrieve the country object values of the given country string
     Country sourceCountry = countries.get(source);
     Country destinationCountry = countries.get(destination);
-    Map<Country, Country> pathMap = new HashMap<>();
-
 
     int sourceInt = countryIntegerMap.get(sourceCountry);
     int destinationInt = countryIntegerMap.get(destinationCountry);
 
     initWeightedPopMatrix(populationMatrix);
-    int vertices = nbCountry;
-
-    long[] dist = new long[vertices];
-    boolean[] visited = new boolean[vertices];
-
-    Arrays.fill(dist, Integer.MAX_VALUE);
-    Arrays.fill(visited, false);
-    dist[sourceInt] = countries.get(source).getPopulation();
-
-    for (int i = 0; i < vertices - 1; i++) {
-      int p = getMinIndex(dist, visited);
-      visited[p] = true;
-
-      for (int j = 0; j < vertices; j++) {
-        if (!visited[j] && populationMatrix[p][j] != 0 && dist[p] != Integer.MAX_VALUE && dist[p] + populationMatrix[p][j] < dist[j]) {
-          dist[j] = dist[p] + populationMatrix[p][j];
-        }
-      }
-    }
-
-    cleanUpList(dist);
-    System.out.println(Arrays.toString(dist));
+//    int vertices = nbCountry;
+//
+//    long[] dist = new long[vertices];
+//    boolean[] visited = new boolean[vertices];
+//
+//    Arrays.fill(dist, Integer.MAX_VALUE);
+//    Arrays.fill(visited, false);
+//
+//    dist[sourceInt] = countries.get(source).getPopulation();
+//
+//    for (int i = 0; i < vertices - 1; i++) {
+//      int p = getMinIndex(dist, visited);
+//      visited[p] = true;
+//
+//      for (int j = 0; j < vertices; j++) {
+//        if (!visited[j] && populationMatrix[p][j] != 0 && dist[p] != Integer.MAX_VALUE && dist[p] + populationMatrix[p][j] < dist[j]) {
+//          dist[j] = dist[p] + populationMatrix[p][j];
+//        }
+//      }
+//    }
+//
+//    cleanUpList(dist);
+//    System.out.println(Arrays.toString(dist));
 
     System.out.println("---- Minimisant Population End ----\n");
+
+    int nVertices = nbCountry;
+
+    // shortestDistances[i] will hold the
+    // shortest distance from src to i
+    long[] shortestDistances = new long[nVertices];
+
+    // added[i] will true if vertex i is
+    // included / in shortest path tree
+    // or shortest distance from src to
+    // i is finalized
+    boolean[] added = new boolean[nVertices];
+
+    // Initialize all distances as
+    // INFINITE and added[] as false
+    for (int vertexIndex = 0; vertexIndex < nVertices;
+         vertexIndex++)
+    {
+      shortestDistances[vertexIndex] = Integer.MAX_VALUE;
+      added[vertexIndex] = false;
+    }
+
+    // Distance of source vertex from
+    // itself is always 0
+    shortestDistances[sourceInt] = integerCountryMap.get(sourceInt).getPopulation();
+
+    // Parent array to store shortest
+    // path tree
+    long[] parents = new long[nVertices];
+
+    // The starting vertex does not
+    // have a parent
+    parents[sourceInt] = NO_PARENT;
+
+    // Find shortest path for all
+    // vertices
+    for (int i = 1; i < nVertices; i++)
+    {
+
+      // Pick the minimum distance vertex
+      // from the set of vertices not yet
+      // processed. nearestVertex is
+      // always equal to startNode in
+      // first iteration.
+      int nearestVertex = -1;
+      long shortestDistance = Integer.MAX_VALUE;
+      for (int vertexIndex = 0;
+           vertexIndex < nVertices;
+           vertexIndex++)
+      {
+        if (!added[vertexIndex] &&
+                shortestDistances[vertexIndex] <
+                        shortestDistance)
+        {
+          nearestVertex = vertexIndex;
+          shortestDistance = shortestDistances[vertexIndex];
+          System.out.println(nearestVertex);
+        }
+      }
+
+      // Mark the picked vertex as
+      // processed
+      if (nearestVertex == -1) {
+        break;
+      } else {
+        added[nearestVertex] = true;
+        // Update dist value of the
+        // adjacent vertices of the
+        // picked vertex.
+        for (int vertexIndex = 0;
+             vertexIndex < nVertices;
+             vertexIndex++)
+        {
+          long edgeDistance = populationMatrix[nearestVertex][vertexIndex];
+
+          if (edgeDistance > 0
+                  && ((shortestDistance + edgeDistance) <
+                  shortestDistances[vertexIndex]))
+          {
+            parents[vertexIndex] = nearestVertex;
+            shortestDistances[vertexIndex] = shortestDistance +
+                    edgeDistance;
+          }
+        }
+      }
+
+    }
+
+    System.out.print("Vertex\t Distance\tPath");
+
+    if (destinationInt != sourceInt)
+    {
+      System.out.print("\n" + sourceInt + " -> ");
+      System.out.print(destinationInt + " \t\t ");
+      System.out.print(shortestDistances[destinationInt] + "\t\t");
+      printPath(destinationInt,parents);
+      Collections.reverse(indices);
+      writeToXml(outname,collectCountries(indices));
+    }
+
   }
+
+  // Function to print shortest path
+  // from source to currentVertex
+  // using parents array
+  private void printPath(long currentVertex,
+                                long[] parents)
+  {
+
+    // Base case : Source node has
+    // been processed;
+    if (currentVertex == 0) {
+      currentVertex = -1;
+    }
+    if (currentVertex == NO_PARENT) {
+      return;
+    }
+    indices.add((int) currentVertex);
+    printPath(parents[(int) currentVertex], parents);
+    System.out.print(currentVertex + " ");
+
+  }
+
 
   private void cleanUpList(long[] dist) {
     for (int i = 0; i < dist.length; i++) {

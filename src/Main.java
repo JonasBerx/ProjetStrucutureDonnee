@@ -16,7 +16,7 @@ public class Main {
 			Graph g = userhandler.getGraph();
 			System.out.println(g.countries.get("BEL"));
 			g.showMatrices("");
-			g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "MEX", "outputMinimumNombreDeFrontieres.xml");
+			g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "FRA", "outputMinimumNombreDeFrontieres.xml");
 			g.calculerItineraireMinimisantPopulationTotale("BEL", "IND","outputMinimumNombreDePopulation.xml");
 
 		} catch (Exception e) {
