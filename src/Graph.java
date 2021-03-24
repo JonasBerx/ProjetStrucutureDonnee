@@ -1,29 +1,27 @@
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public abstract class Graph {
   Map<String, Country> countries;
 
-  public Graph(Map<String,Country> countries) {
+  public Graph(Map<String, Country> countries) {
     this.countries = countries;
   }
-  public abstract List<Integer> calculerItineraireMinimisantNombreDeFrontieres(String bel, String ind) throws Exception;
 
-  public abstract void calculerItineraireMinimisantPopulationTotale(String bel, String ind);
+  public abstract void calculerItineraireMinimisantNombreDeFrontieres(String source, String destination, String outname) throws Exception;
 
-  protected abstract void ajouterSommet(Country c);
+  public abstract void calculerItineraireMinimisantPopulationTotale(String source, String destination, String outname) throws Exception;
 
-  protected abstract void ajouterArc(Travel t);
+  protected abstract void addNode(Country c);
 
-  public abstract Set<Travel> arcsSortants(Country c);
+  protected abstract void addArc(Travel t);
 
-  public abstract boolean sontAdjacents(Country c1, Country c2);
+  protected abstract Set<Travel> outgoingArcs(Country c);
 
-  public abstract boolean estMatrice();
-  public abstract boolean estMatriceNormal();
+  protected abstract boolean adjacent(Country c1, Country c2);
 
-  public abstract int[][] setMatrixInt();
+  public abstract boolean isValidMatrix();
+
+  public abstract void showMatrices(String param);
 
 }
