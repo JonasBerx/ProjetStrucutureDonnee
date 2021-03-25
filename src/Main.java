@@ -17,7 +17,7 @@ public class Main {
 			System.out.println(g.countries.get("BEL"));
 			g.showMatrices("");
 			g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "FRA", "outputMinimumNombreDeFrontieres.xml");
-			g.calculerItineraireMinimisantPopulationTotale("BEL", "IND","outputMinimumNombreDePopulation.xml");
+			g.calculerItineraireMinimisantPopulationTotale("BEL", "BEL","outputMinimumNombreDePopulation.xml");
 
 		} catch (Exception e) {
 			e.printStackTrace();

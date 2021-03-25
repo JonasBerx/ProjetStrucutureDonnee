@@ -291,19 +291,19 @@ public class Matrix extends Graph {
       }
 
     }
+    if (shortestDistances[destinationInt] == Integer.MAX_VALUE) {
+      throw new Exception("Cannot reach this country");
+    }
 
     System.out.print("Vertex\t Distance\tPath");
 
-    if (destinationInt != sourceInt)
-    {
-      System.out.print("\n" + sourceInt + " -> ");
-      System.out.print(destinationInt + " \t\t ");
-      System.out.print(shortestDistances[destinationInt] + "\t\t");
-      printPath(destinationInt,parents);
-      Collections.reverse(indices);
-      writeToXml(outname,collectCountries(indices));
-    }
-    System.out.println("---- Minimisant Population End ----\n");
+    System.out.print("\n" + sourceInt + " -> ");
+    System.out.print(destinationInt + " \t\t ");
+    System.out.print(shortestDistances[destinationInt] + "\t\t");
+    printPath(destinationInt,parents);
+    Collections.reverse(indices);
+    writeToXml(outname,collectCountries(indices));
+    System.out.println("\n---- Minimisant Population End ----\n");
 
   }
 
