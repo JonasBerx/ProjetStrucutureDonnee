@@ -20,8 +20,5 @@ public abstract class Graph {
 
   protected abstract boolean adjacent(Country c1, Country c2);
 
-  public abstract boolean isValidMatrix();
-
-  public abstract void showMatrices(String param);
 
 }

@@ -47,15 +47,12 @@ public class SAXHandler extends DefaultHandler {
   }
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-    if (!qName.equalsIgnoreCase("border")) {
-//      System.out.println("Start element: " + qName);
-    }
+  public void startElement(String uri, String localName, String qName, Attributes attributes) {
     if (qName.equalsIgnoreCase("country")) {
       name = attributes.getValue("name");
       cca3 = attributes.getValue("cca3");
       population = Integer.parseInt(attributes.getValue("population"));
-      borders = new ArrayList<String>();
+      borders = new ArrayList<>();
     }
 
     if (qName.equalsIgnoreCase("border")) {
@@ -66,7 +63,7 @@ public class SAXHandler extends DefaultHandler {
   }
 
   @Override
-  public void characters(char[] ch, int start, int length) throws SAXException {
+  public void characters(char[] ch, int start, int length) {
     if (bfname) {
       bfname = false;
     }
@@ -88,22 +85,18 @@ public class SAXHandler extends DefaultHandler {
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     if (qName.equalsIgnoreCase("country")) {
       Country country = new Country(cca3, population, name);
       country.setBordersString(borders);
       countries.put(cca3, country);
     }
-//    if (!qName.equalsIgnoreCase("border")) {
-//      System.out.println("End element: " + qName);
-//      System.out.println("-------------------");
-//    }
     if (qName.equalsIgnoreCase("countries")) {
       Map<String, Country> tempMap = new HashMap<>();
       for (Country country : countries.values()) {
         Country c2 = new Country(country.getCode(), country.getPopulation(), country.getName());
         c2.setBordersString(country.getBordersString());
-        List<Country> listCountries = new ArrayList<Country>();
+        List<Country> listCountries = new ArrayList<>();
         for (String border : country.getBordersString()) {
           if(c2.getBorders().size() < country.getBordersString().size()) {
             c2.addBorders(countries.get(border));
@@ -116,7 +109,6 @@ public class SAXHandler extends DefaultHandler {
   }
 
     public Matrix getGraph () {
-
       am = new Matrix(countries);
       for (Country country : countries.values()) {
         am.addNode(country);

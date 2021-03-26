@@ -1,0 +1,10 @@
+<!ELEMENT itinaire (pays*)>
+<!ATTLIST itinaire arrivee CDATA #REQUIRED>
+<!ATTLIST itinaire depart CDATA #REQUIRED>
+<!ATTLIST itinaire nbPays CDATA #REQUIRED>
+<!ATTLIST itinaire sommePopulation CDATA #REQUIRED>
+
+<!ELEMENT pays (#PCDATA)>
+<!ATTLIST pays cca3 CDATA #REQUIRED>
+<!ATTLIST pays nom CDATA #REQUIRED>
+<!ATTLIST pays population CDATA #REQUIRED>

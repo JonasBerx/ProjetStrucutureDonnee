@@ -11,13 +11,9 @@ public class Main {
 			SAXParser saxParser = factory.newSAXParser();
 			SAXHandler userhandler = new SAXHandler();
 			saxParser.parse(inputFile, userhandler);
-			System.out.println("-------------------");
-			System.out.println("-------------------");
 			Graph g = userhandler.getGraph();
-			System.out.println(g.countries.get("BEL"));
-			g.showMatrices("");
-			g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "FRA", "outputMinimumNombreDeFrontieres.xml");
-			g.calculerItineraireMinimisantPopulationTotale("BEL", "BEL","outputMinimumNombreDePopulation.xml");
+			g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "IND", "outputMinimumNombreDeFrontieres.xml");
+			g.calculerItineraireMinimisantPopulationTotale("BEL", "IND","outputMinimumNombreDePopulation.xml");
 
 		} catch (Exception e) {
 			e.printStackTrace();
